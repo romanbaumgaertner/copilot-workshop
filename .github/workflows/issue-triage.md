@@ -38,10 +38,16 @@ safe-outputs:
       - bug
       - feature
       - question
-      # TODO 1: Add the labels needed for incomplete issues, duplicates,
-      # invalid submissions, spam, priorities p0 through p2, and the three
-      # suggested-team routing options.
-      # Do not allow `routing/approved`; only a human reviewer may apply it.
+      - needs-info
+      - priority/p0
+      - priority/p1
+      - priority/p2
+      - duplicate
+      - invalid
+      - spam
+      - suggested-team/workflows
+      - suggested-team/developer-experience
+      - suggested-team/support-triage
     max: 4
   add-comment:
     max: 1
@@ -66,10 +72,16 @@ repository context. Do not invent missing details.
 
 ## 2. Assess completeness
 
-<!-- TODO 2A:
-Define the evidence required for a bug and for a feature or task.
-Define what the workflow should do when essential information is missing.
--->
+For a bug, look for reproduction steps, expected and actual behavior, relevant
+logs or errors, and environment details. For a feature or task, look for the
+problem being solved, desired outcome, and enough scope to understand the
+request.
+
+If essential details are missing:
+
+- Apply `needs-info` when that label exists.
+- Ask only the specific questions needed to proceed.
+- Do not guess a type, priority, or solution.
 
 If the issue is clearly spam, gibberish, or a test submission, apply `spam` or
 `invalid` when available, explain the assessment briefly, and stop.
@@ -80,14 +92,25 @@ Choose only labels that already exist and are directly supported by evidence.
 Apply at most one type label, one priority label, one status label such as
 `needs-info` or `duplicate`, and one suggested-team label.
 
-<!-- TODO 2B:
-Define priority/p0, priority/p1, and priority/p2 for this repository.
-Include a rule that prefers leaving priority unset over guessing.
-Define when to recommend each suggested-team label:
-- suggested-team/workflows
-- suggested-team/developer-experience
-- suggested-team/support-triage
--->
+- `priority/p0`: Active security incident, severe data loss, or broad outage.
+- `priority/p1`: Major regression or blocker with no reasonable workaround.
+- `priority/p2`: Normal actionable work without immediate operational impact.
+
+Labels can trigger other automation. Prefer leaving priority unset over applying
+one speculatively.
+
+Recommend routing using at most one label:
+
+- `suggested-team/workflows`: Agentic Workflows, GitHub Actions workflow
+  definitions, workflow compilation, schema validation, and automation logic.
+- `suggested-team/developer-experience`: GitHub CLI, authentication, Codespaces,
+  local developer tooling, and developer environment problems.
+- `suggested-team/support-triage`: incomplete intake, general usage questions,
+  or reports that cannot yet be routed to a product team.
+
+Prefer leaving the team unset over an unsupported product-team guess. An
+incomplete issue may route to support triage when focused clarification is the
+appropriate next action.
 
 ## 4. Find duplicates and related issues
 
@@ -114,16 +137,24 @@ Suggest one focused next step when the evidence supports it.
 
 ## 7. Report
 
-<!-- TODO 3:
-Define a concise maintainer-facing report containing:
-- a 1–2 sentence summary
-- type and priority with brief evidence
-- a suggested-team label and simulated inline-code team tag
-- approval status set to "Pending maintainer review"
-- up to two similar issues when useful
-- one focused next step
+Post one concise comment:
 
-For an incomplete issue, replace speculative classification with focused
-clarifying questions while retaining the routing recommendation and approval
-status when supported. Keep the entire comment under 300 words.
--->
+```markdown
+## Triage report
+
+[One or two sentences summarizing the issue and recommended routing.]
+
+| Assessment | Result | Reasoning |
+|---|---|---|
+| Type | [type or unset] | [brief evidence] |
+| Priority | [priority or unset] | [brief evidence] |
+| Suggested team | [`suggested-team/*` or unset] | [brief evidence] |
+| Simulated tag | [`@example/team-name` or unset] | No real mention is created |
+| Approval | Pending maintainer review | Human confirms or changes the route |
+
+### Similar issues
+- #[number] — [duplicate or related, with a brief reason]
+
+### Next step
+[One focused action or the specific information still needed.]
+
